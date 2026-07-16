@@ -1,0 +1,8 @@
+# Per-machine Claude Code overrides — never commit
+.claude/settings.local.json
+CLAUDE.local.md
+
+# OS noise
+Thumbs.db
+.DS_Store
+*.log

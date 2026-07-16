@@ -1,0 +1,5 @@
+# Keep scripts runnable regardless of Windows git settings
+*.sh text eol=lf
+*.py text eol=lf
+*.luau text eol=lf
+*.md text

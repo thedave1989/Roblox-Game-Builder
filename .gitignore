@@ -2,6 +2,9 @@
 .claude/settings.local.json
 CLAUDE.local.md
 
+# Session counters (session-nudge hook scratch)
+.claude/.tmp/
+
 # OS noise
 Thumbs.db
 .DS_Store

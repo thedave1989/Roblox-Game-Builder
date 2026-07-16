@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!--
+  style-preview-template.html — the stylist agent copies this file to
+  game/style-preview.html and replaces every {{TOKEN}}, then tells the
+  player to double-click it. It must stay 100% self-contained (no internet
+  needed): fonts fall back to system stacks that approximate Roblox's fonts.
+
+  Tokens: GAME_NAME, MOOD_LINE, SKY_TOP, SKY_BOTTOM, FOG_NOTE,
+          COLOR{1..4}_NAME / _HEX, UI_FONT_STACK, UI_FONT_NAME,
+          BTN_BG, BTN_TEXT, PANEL_BG, PANEL_TEXT, HEADLINE_TEXT, BUTTON_TEXT
+  Materials: keep only the .tile blocks for materials this game uses;
+  delete the rest. Every tile's caption says the real Roblox material name.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{GAME_NAME}} — style preview</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: #f4f2ee; color: #222; padding: 24px;
+    max-width: 900px; margin: 0 auto;
+  }
+  h1 { font-size: 2rem; margin-bottom: 4px; }
+  .mood { color: #555; font-size: 1.1rem; margin-bottom: 24px; }
+  h2 { font-size: 1.1rem; margin: 28px 0 10px;
+       text-transform: uppercase; letter-spacing: .06em; color: #777; }
+  .sky {
+    height: 110px; border-radius: 14px;
+    background: linear-gradient(to bottom, {{SKY_TOP}}, {{SKY_BOTTOM}});
+    display: flex; align-items: flex-end; padding: 10px 14px;
+    color: rgba(255,255,255,.92); font-size: .95rem;
+    text-shadow: 0 1px 3px rgba(0,0,0,.4);
+  }
+  .row { display: flex; flex-wrap: wrap; gap: 14px; }
+  .swatch { flex: 1 1 150px; border-radius: 12px; overflow: hidden;
+            background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+  .swatch .chip { height: 84px; }
+  .swatch .label { padding: 8px 12px; font-weight: 600; }
+  .swatch .hex { font-weight: 400; color: #888; font-size: .85rem; }
+  .tile { flex: 1 1 130px; max-width: 180px; border-radius: 12px; overflow: hidden;
+          background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.12); text-align: center; }
+  .tile .tex { height: 84px; }
+  .tile .label { padding: 8px 10px; font-weight: 600; font-size: .9rem; }
+  /* --- Roblox material approximations (CSS-only) --- */
+  .m-plastic { background: linear-gradient(135deg, #e8e8e8 0%, #cfcfcf 100%); }
+  .m-wood    { background: repeating-linear-gradient(90deg,
+               #9a6b3f 0 14px, #8a5c33 14px 18px, #a5744a 18px 34px); }
+  .m-neon    { background: {{COLOR1_HEX}};
+               box-shadow: inset 0 0 26px 8px rgba(255,255,255,.65); }
+  .m-grass   { background:
+               radial-gradient(circle at 20% 30%, #4c8c3a 2px, transparent 3px),
+               radial-gradient(circle at 70% 60%, #3f7a2f 2px, transparent 3px),
+               radial-gradient(circle at 45% 80%, #57a044 2px, transparent 3px),
+               #4a8a38; background-size: 26px 26px; }
+  .m-slate   { background:
+               linear-gradient(160deg, #7d8087 0 40%, #6d7076 40% 70%, #83868d 70%),
+               #767980; }
+  .m-brick   { background:
+               repeating-linear-gradient(0deg, #b0563f 0 16px, #93402e 16px 19px),
+               repeating-linear-gradient(90deg, transparent 0 30px, #93402e 30px 33px); }
+  .m-metal   { background: linear-gradient(105deg,
+               #b9bec6 0%, #dfe3e8 30%, #9aa0a8 55%, #ccd1d7 80%, #aeb3bb 100%); }
+  .m-sand    { background:
+               radial-gradient(circle at 30% 40%, #e8d09a 1.5px, transparent 2.5px),
+               radial-gradient(circle at 75% 70%, #d9bf85 1.5px, transparent 2.5px),
+               #e2c98f; background-size: 18px 18px; }
+  .m-ice     { background: linear-gradient(135deg,
+               #dff2fb 0%, #b8e0f5 45%, #eaf8ff 100%); }
+  /* --- Fonts & UI sample --- */
+  .fontcard { background: #fff; border-radius: 12px; padding: 16px 18px;
+              box-shadow: 0 1px 4px rgba(0,0,0,.12); margin-bottom: 12px; }
+  .fontcard .name { color: #888; font-size: .8rem; margin-bottom: 6px; }
+  .f-ui { font-family: {{UI_FONT_STACK}}; }
+  .headline { font-size: 1.7rem; font-weight: 800; }
+  .uistage {
+    border-radius: 14px; padding: 28px;
+    background: linear-gradient(to bottom, {{SKY_TOP}}, {{SKY_BOTTOM}});
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .panel { background: {{PANEL_BG}}; color: {{PANEL_TEXT}};
+           border-radius: 16px; padding: 18px 26px; text-align: center;
+           box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+  .btn { background: {{BTN_BG}}; color: {{BTN_TEXT}};
+         border: none; border-radius: 12px; padding: 12px 34px;
+         font-size: 1.15rem; font-weight: 700; font-family: {{UI_FONT_STACK}};
+         box-shadow: 0 3px 0 rgba(0,0,0,.25); cursor: pointer; }
+  .note { margin-top: 26px; color: #999; font-size: .85rem; }
+</style>
+</head>
+<body>
+  <h1>{{GAME_NAME}}</h1>
+  <p class="mood">{{MOOD_LINE}}</p>
+
+  <h2>The sky &amp; mood</h2>
+  <div class="sky"><span>{{FOG_NOTE}}</span></div>
+
+  <h2>Your colours</h2>
+  <div class="row">
+    <div class="swatch"><div class="chip" style="background:{{COLOR1_HEX}}"></div>
+      <div class="label">{{COLOR1_NAME}} <span class="hex">{{COLOR1_HEX}}</span></div></div>
+    <div class="swatch"><div class="chip" style="background:{{COLOR2_HEX}}"></div>
+      <div class="label">{{COLOR2_NAME}} <span class="hex">{{COLOR2_HEX}}</span></div></div>
+    <div class="swatch"><div class="chip" style="background:{{COLOR3_HEX}}"></div>
+      <div class="label">{{COLOR3_NAME}} <span class="hex">{{COLOR3_HEX}}</span></div></div>
+    <div class="swatch"><div class="chip" style="background:{{COLOR4_HEX}}"></div>
+      <div class="label">{{COLOR4_NAME}} <span class="hex">{{COLOR4_HEX}}</span></div></div>
+  </div>
+
+  <h2>Materials (how things feel)</h2>
+  <div class="row">
+    <div class="tile"><div class="tex m-plastic"></div><div class="label">Plastic</div></div>
+    <div class="tile"><div class="tex m-wood"></div><div class="label">Wood</div></div>
+    <div class="tile"><div class="tex m-neon"></div><div class="label">Neon</div></div>
+    <div class="tile"><div class="tex m-grass"></div><div class="label">Grass</div></div>
+    <div class="tile"><div class="tex m-slate"></div><div class="label">Slate</div></div>
+    <div class="tile"><div class="tex m-brick"></div><div class="label">Brick</div></div>
+    <div class="tile"><div class="tex m-metal"></div><div class="label">Metal</div></div>
+    <div class="tile"><div class="tex m-sand"></div><div class="label">Sand</div></div>
+    <div class="tile"><div class="tex m-ice"></div><div class="label">Ice</div></div>
+  </div>
+
+  <h2>Words on screen</h2>
+  <div class="fontcard f-ui">
+    <div class="name">Menus &amp; titles — {{UI_FONT_NAME}} (closest look; the real one shows in Roblox)</div>
+    <div class="headline">{{HEADLINE_TEXT}}</div>
+  </div>
+
+  <h2>What a menu could look like</h2>
+  <div class="uistage f-ui">
+    <div class="panel">
+      <div class="headline">{{GAME_NAME}}</div>
+      <p>{{MOOD_LINE}}</p>
+    </div>
+    <button class="btn">{{BUTTON_TEXT}}</button>
+  </div>
+
+  <p class="note">This page is a preview made from game/STYLE.md — the game
+  itself is built in Roblox Studio. If you want different colours or a
+  different feel, just say so in the chat and a new preview appears.</p>
+</body>
+</html>

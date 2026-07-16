@@ -19,15 +19,21 @@ everything a non-technical user would ever have to think about.
 
 ## How it works
 
-**Three agents** (that's the "multi-agent" — deliberately no more):
+**Four agents** (that's the "multi-agent" — deliberately no more):
 
 - **game-planner** (Opus — the only place Opus runs): turns the player's idea
   into `game/GAME-PLAN.md`, a plain-English plan of small buildable steps.
-- **builder** (Sonnet): writes the Luau for exactly one step into
+- **builder** (Sonnet): writes the Luau for exactly one mechanics step into
   `game/scripts/`, each file carrying an `--[[ INSTALL ]]` header.
+- **stylist** (Sonnet): owns how the game LOOKS — `game/STYLE.md` (palette,
+  materials, sky, fonts), the `style-preview.html` picture page the player
+  can double-click to SEE the style in a browser, and the Luau for visual
+  steps (UI, lighting, world dressing).
 - **checker** (Sonnet): reviews every script against a Roblox-pitfall
-  checklist before it's allowed anywhere near Studio. Writer never reviews
-  its own work — that separation is inherited straight from CCMAF.
+  checklist before it's allowed anywhere near Studio, enforces STYLE.md on
+  visual steps, and scans Toolbox free models for hidden malicious scripts.
+  Writer never reviews its own work — that separation is inherited straight
+  from CCMAF.
 
 **Seven commands** are the player's whole interface: `/newgame` `/build`
 `/test` `/fix` `/undo` `/publish` `/help`. The loop is /build → /test,
@@ -60,7 +66,21 @@ memory between chats. Cold start = read those two files. That's it.
   only — they're prefix matchers and easy to sidestep; the guard hook is
   the real control.
 - **Code hygiene rules** the agents enforce: no marketplace `require()`, no
-  `loadstring`, server validates everything a client sends.
+  `loadstring`, server validates everything a client sends; Toolbox free
+  models get scanned for hidden scripts before they stay.
+- **Safety-net self-check** (`safety-check.sh`, every session start —
+  adapted from CCMAF's guard-interpreter-check + doctor): live-fire tests
+  the command guard, verifies git/snapshots/hook wiring, confirms no remote
+  on player machines. Silent when healthy; on failure it makes Claude tell
+  the player to get Dave BEFORE building. `/checkup` runs the same checks
+  verbosely, plus the test suite, for phone-call diagnosis.
+- **Mechanical frugality** (`session-nudge.sh`): counts prompts per session
+  and past ~25 has Claude suggest a friendly break — the credit protection
+  is enforced by a hook, not just promised in prose (CCMAF's "hooks are
+  enforcement, not suggestion").
+- **Shipped test suite** (`tests/run-tests.sh`): 25+ checks proving the
+  guard's block/allow matrix, snapshot behavior, remote stripping, and both
+  nudges — run it after ANY change under `.claude/`.
 
 ## Frugality (Pro-plan friendly)
 
@@ -76,13 +96,19 @@ the state files make every fresh chat cheap.
 CLAUDE.md            # Claude's rules (the brain)
 HOW-TO-USE.md        # the player's one-page manual
 SETUP.md             # your install guide
+tests/
+  run-tests.sh       # self-test suite — run after any .claude/ change
 .claude/
   settings.json      # model pin, permissions, hook wiring
-  hooks/             # block-danger.py, auto-save.sh, progress-nudge.sh
-  agents/            # game-planner, builder, checker
-  commands/          # newgame, build, test, fix, undo, publish, help
+  hooks/             # block-danger.py, auto-save, progress-nudge,
+                     # safety-check (SessionStart), session-nudge (frugality)
+  agents/            # game-planner, builder, stylist, checker
+  commands/          # newgame, build, test, fix, undo, publish, help, checkup
+  templates/         # style-preview-template.html
 game/
   GAME-PLAN.md       # their game's plan (starts as a friendly placeholder)
+  STYLE.md           # the look: palette, materials, sky, fonts
+  style-preview.html # generated picture page of STYLE.md (double-click it)
   PROGRESS.md        # memory between chats
   scripts/           # canonical copy of every script installed in Studio
 ```

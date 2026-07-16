@@ -10,8 +10,11 @@ and stop.
 ## The sequence
 
 1. **Say what's next.** "Next up: STEP-N — <name>. Building it now…"
-2. **Builder writes it.** Spawn the `builder` agent with the step text and the
-   "what you'll see" line. It writes files into `game/scripts/`.
+2. **The right agent writes it.** Is the step about LOOKS (a menu/UI screen,
+   the sky or lighting, decorating an area) or MECHANICS (things that happen)?
+   Spawn the `stylist` for looks, the `builder` for mechanics — give it the
+   step text and the "what you'll see" line. Either way the files land in
+   `game/scripts/`, and visual steps must follow `game/STYLE.md`.
 3. **Checker checks it.** Spawn the `checker` agent on those files. If it says
    FIX NEEDED, send the fix list back to a fresh `builder` run (max 2 repair
    rounds; still failing → tell the player plainly: "This step is fighting me

@@ -36,6 +36,24 @@ away. Before you know it — whole game.
 3. **Stuck? Say so.** Type /fix and describe it YOUR way ("the door ate me").
    That's a perfectly good bug report.
 
+## Making it look awesome 🎨
+
+Your game has its own style — colours, sky, menus. When you make a game with
+/newgame, you also get a **picture page**: in your game folder, double-click
+**style-preview** and you'll SEE your game's look in your browser. Want
+different colours? A spookier sky? Just say so in the chat — you'll get a
+new picture page to check.
+
+## Free stuff from the Toolbox 🧸
+
+In Studio there's a **Toolbox** full of free models (trees, cars, castles).
+You CAN use them — but some have yucky hidden code inside. The rule:
+
+1. Insert the model you like.
+2. Tell the chat: "I added a castle from the toolbox — check it please."
+3. It looks inside and tells you if anything should be removed. Do what it
+   says — then enjoy your castle.
+
 ## When to ask Dave
 
 If the helper says **"ask Dave to look at this"** — that's not you failing,

@@ -91,17 +91,19 @@ The shape of it:
 
 ## 4. Smoke test (do NOT skip)
 
-First, prove the guard by hand — this is deterministic, unlike asking Claude
-to attempt a dangerous command (it may just refuse, which proves nothing):
+First, run the shipped self-test suite — deterministic proof of the whole
+safety net (guard block/allow matrix, snapshots, remote stripping, both
+nudge hooks):
 
 ```
 cd "C:\Users\<them>\RobloxGameBuilder"
-echo '{"tool_input":{"command":"rm -rf /"}}' | python .claude/hooks/block-danger.py
-echo $?
+bash tests/run-tests.sh
 ```
 
-You must see the plain-English BLOCKED message and exit code `2`. If you see
-nothing and `0`, the guard is not working — stop and fix before hand-off.
+Every line must say PASS. Any FAIL → stop and fix before hand-off. (The
+safety-check hook re-verifies the essentials at EVERY session start from
+then on, and tells Claude to send the player to you if anything breaks —
+but never hand over a machine that starts red.)
 
 Then, in Claude Code opened at the project folder, Studio open on a blank
 baseplate:

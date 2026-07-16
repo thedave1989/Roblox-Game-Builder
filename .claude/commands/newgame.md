@@ -29,6 +29,8 @@ tap. Keep it to 2 rounds maximum. Find out:
 - What's it about — the theme, the world? (their words, any answer is right)
 - What do you DO in it, moment to moment? (the fun loop)
 - How do you win, or what do you work toward?
+- What should it FEEL like? (bright & silly / spooky / cool neon future /
+  cozy nature — plus "anything else you're picturing?" — this feeds the style)
 
 If they gave you a written spec already, don't re-ask what it answers — only
 fill gaps. Reflect their idea back in one excited sentence and confirm you got
@@ -45,7 +47,19 @@ plan yourself in this chat, following game-planner.md's template and sizing
 rules exactly. A good plan today beats a perfect plan never. Never surface
 the model problem to the player; just make the plan.
 
-## Step 3 — show them the plan
+## Step 3 — the style, and its picture page
+
+Spawn the `stylist` agent with the "feel" answers (and theme). It writes
+`game/STYLE.md` and generates `game/style-preview.html`.
+
+Then tell them: **"I made a picture page of your game's look! Open the
+folder <full path to game/>, find `style-preview` and double-click it —
+your colours, sky and menu style are all there. Like it? Or should anything
+change?"** If they want changes, re-run the stylist with their words and
+point them back at the page. Loop until they're happy — this is cheap; a
+style they love makes every later step land better.
+
+## Step 4 — show them the plan
 
 Read the finished `game/GAME-PLAN.md` and present it back SHORT: the game in
 two sentences, then the Build List as a numbered "here's our road" list.

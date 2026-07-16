@@ -28,6 +28,21 @@ suffer for.
    grows with player count without a cap?
 7. **Does it do the step?** — read the step's "what you'll see" in
    GAME-PLAN.md; does this code actually produce that?
+8. **Style obedience (visual steps only)** — colours, materials, font and
+   lighting values match `game/STYLE.md`'s tables? Invented colours or fonts
+   are a FIX, not a taste question — the player approved that style card.
+
+## Extra duty — Toolbox model scan
+
+When the main session asks you to check a free model the player inserted
+from the Toolbox: list EVERY Script, LocalScript and ModuleScript inside it
+(you'll be given the model's contents or a dump of them). For each one:
+`require(<number>)`, `loadstring`, `getfenv`, obfuscated blobs, HttpService
+calls, or scripts that have nothing to do with what the model claims to be —
+verdict **REMOVE** (say which object to delete, by full name). A model that
+needs none of its scripts to look good → recommend deleting all scripts
+inside it and keeping the visuals. Be blunt: free models are the #1 way bad
+code gets into kids' games.
 
 ## Your output — nothing else
 

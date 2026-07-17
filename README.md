@@ -1,144 +1,162 @@
-# Roblox Game Builder
+<div align="center">
 
-A multi-agent Claude Code framework with exactly one job: let a completely
-non-technical person build real Roblox games in Roblox Studio by talking to
-Claude — safely, cheaply, and without ever seeing a terminal command, a config
-file, or the word "git".
+# 👑 Mad Yoke's Roblox Game Builder
 
-Built by adapting the best parts of [CCMAF](https://github.com/drushegh/CCMAF)
-(its security posture, state-file discipline, and hook patterns) and deleting
-everything a non-technical user would ever have to think about.
+<img src="channels4_profile.jpg" width="520" alt="Mad Yoke's avatar" />
 
-## Who does what
+**You talk. It builds. You play it.**
 
-| File | For |
-| --- | --- |
-| `SETUP.md` | **You (the helper)** — one-time install on their machine |
-| `HOW-TO-USE.md` | **The player** — their entire manual, one page |
-| `CLAUDE.md` | Claude — the behavioral rules for every session |
+**Talk to build** · **Every script checked** · **Designed for ~€20/month**
+
+[How it works](#how-it-works) · [Parents — start here](#parents--start-here)
+
+</div>
+
+---
+
+## What this is
+
+This is my game studio. I tell Claude what I want — a lava obby, a tycoon, a pet that follows me — and a crew of four AI agents builds it in Roblox Studio, one step at a time. I never touch code, a terminal, or a config file. Every script gets crown-checked before it can run in my game.
 
 ## How it works
 
-**Four agents** (that's the "multi-agent" — deliberately no more):
+One step at a time. That's the rule.
 
-- **game-planner** (Opus — the only place Opus runs): turns the player's idea
-  into `game/GAME-PLAN.md`, a plain-English plan of small buildable steps.
-- **builder** (Sonnet): writes the Luau for exactly one mechanics step into
-  `game/scripts/`, each file carrying an `--[[ INSTALL ]]` header.
-- **stylist** (Sonnet): owns how the game LOOKS — `game/STYLE.md` (palette,
-  materials, sky, fonts), the `style-preview.html` picture page the player
-  can double-click to SEE the style in a browser, and the Luau for visual
-  steps (UI, lighting, world dressing).
-- **checker** (Sonnet): reviews every script against a Roblox-pitfall
-  checklist before it's allowed anywhere near Studio, enforces STYLE.md on
-  visual steps, and scans Toolbox free models for hidden malicious scripts.
-  Writer never reviews its own work — that separation is inherited straight
-  from CCMAF.
+`/build` makes the next piece — just one, so you always know what changed. The checker stamps it with the crown, or it never reaches Studio. Then `/test`: jump into Roblox Studio, play it, tick the step off. Repeat until it's a game.
 
-**Eight commands** are the player's whole interface: `/newgame` `/build`
-`/test` `/fix` `/undo` `/publish` `/peek` `/help` (plus `/checkup` for Dave).
-The loop is /build → /test, one visible step at a time; `/peek` is an opt-in
-"explain this in plain words" mode, offered only from `/help`.
+<div align="center">
+<img src=".github/assets/rm-loop.webp" width="820" alt="Diagram of the build loop: you run /build, the builder writes one step, the checker approves it with the crown stamp, it lands in Roblox Studio, you run /test and play it, then the loop starts again on the next step." />
+</div>
 
-**Studio bridge:** the official Roblox Studio MCP plugin (scripts appear in
-their game automatically), with a guided copy-paste fallback built into
-/build for when Studio isn't connected.
+*The loop: one step, one crown, one play-test. Repeat.*
 
-**Two state files** (`game/GAME-PLAN.md`, `game/PROGRESS.md`) carry all
-memory between chats. Cold start = read those two files. That's it.
+**Example** — what a step looks like (illustrative, not a real transcript):
 
-## Safety net (the part to trust)
-
-- **Invisible git:** hooks auto-snapshot on every change and at session end
-  (`auto-save.sh`), with author identity forced per-commit so the machine
-  needs no git config. Local-only — no remote ever. `/undo` presents
-  snapshots as plain choices ("end of yesterday") and restores `game/` only.
-- **Command guard:** `block-danger.py` (adapted from CCMAF) structurally
-  blocks catastrophic commands — recursive deletes of roots/home/`.git`,
-  disk writers, formatters, diskpart, fork bombs — Windows-aware (it catches
-  `del /s`, `Remove-Item -Recurse`, `diskpart` and friends too, however
-  they're typed). Claude Code only has the one Bash tool, even on Windows —
-  there's no separate "PowerShell tool" to also guard. Fails open on parse
-  errors, fails CLOSED if Python is missing. One honest caveat: the hook
-  chain runs through `bash`, so SETUP.md's bash-on-PATH check and by-hand
-  guard test are mandatory — a machine without bash has none of this
-  protection.
-- **Studio gate** (`studio-gate.py` + `record-approval.py` + the install
-  template) — the real control on what reaches Studio. Every Roblox Studio MCP
-  call passes through a `PreToolUse` gate; a script install runs only if it is
-  the EXACT checker-approved file source (matched structurally against the
-  install template and by SHA-256 to a record in `game/.builder/approved.json`),
-  and arbitrary code, model insertion, or any tool Dave hasn't classified in
-  `.claude/studio-tools.json` is blocked by default. It fails CLOSED (unlike the
-  shell guard). Two honest limits: **(1)** the approval record is written by the
-  framework, not cryptographically signed by the checker — so it stops accidents
-  and stale/edited installs, not a deliberately-lying orchestrator, which is why
-  arbitrary exec and model insertion stay Dave-gated even with it in place;
-  **(2)** the `builder`/`stylist` agents that WRITE Luau have no Bash and no MCP
-  tools — they cannot execute anything; only the main session installs, after
-  the checker's PASS. Both are load-bearing — don't "simplify" them away.
-- **Permission walls** in `.claude/settings.json`: Write/Edit scoped to
-  `game/**`; deny-rules on secret paths (.env, ssh/aws keys, `.git/`
-  internals); ask-gates on `.claude/**`, CLAUDE.md, and remote-touching git.
-  The destructive-command ask-gates (`rm -rf` etc.) are belt-and-braces
-  only — they're prefix matchers and easy to sidestep; the guard hook is
-  the real control.
-- **Code hygiene rules** the agents enforce: no marketplace `require()`, no
-  `loadstring`, server validates everything a client sends; Toolbox free
-  models get scanned for hidden scripts before they stay.
-- **Safety-net self-check** (`safety-check.sh`, every session start —
-  adapted from CCMAF's guard-interpreter-check + doctor): live-fire tests
-  the command guard, verifies git/snapshots/hook wiring, confirms no remote
-  on player machines. Silent when healthy; on failure it makes Claude tell
-  the player to get Dave BEFORE building. `/checkup` runs the same checks
-  verbosely, plus the test suite, for phone-call diagnosis.
-- **Mechanical frugality** (`session-nudge.sh`): counts substantial build/fix
-  actions and past ~12–15 has Claude suggest a friendly break — the credit
-  protection is enforced by a hook, not just promised in prose (CCMAF's "hooks
-  are enforcement, not suggestion"), and it never quotes a usage number it
-  can't actually measure.
-- **Shipped test suite** (`tests/run-tests.sh`): 80+ checks proving the shell
-  guard's block/allow matrix, the Studio gate's install-and-bypass matrix,
-  snapshot behavior, remote stripping, and both nudges — run it after ANY
-  change under `.claude/`.
-
-## Frugality (Pro-plan friendly)
-
-Sonnet by default (pinned in settings.json), Opus only for game planning,
-two-file cold start, short-reply rules in CLAUDE.md, one build step per
-command, and zero background machinery (no telemetry, no update checks, no
-consoles). Hitting the plan limit just means "come back after the reset" —
-the state files make every fresh chat cheap.
-
-## Repo layout
-
+```text
+You:      /build
+Builder:  Step 4 of 9 — spinning coins that vanish when you grab them.
+Checker:  Script reviewed. Approved 👑 — sent to Studio.
+You:      /test
+          (in Studio) Coins spin. Grabbed one — gone. Step 4 done.
 ```
-CLAUDE.md            # Claude's rules (the brain)
-HOW-TO-USE.md        # the player's one-page manual
-SETUP.md             # your install guide
-tests/
-  run-tests.sh       # self-test suite — run after any .claude/ change
-.claude/
-  settings.json      # model pin, permissions, hook wiring
-  studio-tools.json  # Dave's Studio-tool safety map (auto / artifact / dave)
-  hooks/             # block-danger.py, studio-gate.py (the F1 Studio gate),
-                     # record-approval.py, auto-save, progress-nudge,
-                     # safety-check (SessionStart), session-nudge (frugality)
-  agents/            # game-planner, builder, stylist, checker
-  commands/          # newgame, build, test, fix, undo, publish, peek, help,
-                     # checkup
-  templates/         # style-preview-template.html, install-wrapper.luau
-  skills/            # Roblox knowledge packs (router SKILL.md + references/):
-                     # luau-basics, game-recipes, safe-scripting, gui-basics,
-                     # fix-recipes, npcs-and-enemies, sound-and-music,
-                     # worlds-and-terrain, player-data, badges-and-passes,
-                     # code-peek
-game/
-  GAME-PLAN.md       # their game's plan (starts as a friendly placeholder)
-  STYLE.md           # the look: palette, materials, sky, fonts
-  style-preview.html # generated picture page of STYLE.md (double-click it)
-  PROGRESS.md        # memory between chats
-  scripts/           # canonical copy of every script installed in Studio
-  changes/           # approved non-script edits (bounded property changes)
-  .builder/          # approval ledger the Studio gate reads (machine state)
-```
+
+## The crew
+
+Four agents. Each does one job.
+
+- **`game-planner`** — turns your idea into a plan of small steps.
+- **`builder`** — writes the Luau code for one step.
+- **`stylist`** — the looks: UI, colours, lighting, the style sheet.
+- **`checker`** — reviews **every** script before it can reach Studio.
+
+The one who writes the code never reviews it. The checker never builds. That's the whole trick.
+
+And the gold crown is the checker's stamp — and Mad Yoke's mark. Same crown. That's on purpose.
+
+<div align="center">
+<img src=".github/assets/rm-crew.webp" width="820" alt="The four agents: game-planner, builder and stylist on the creative side, and the checker standing apart with the gold crown stamp it puts on approved scripts." />
+</div>
+
+*game-planner · builder · stylist — and the checker, holding the crown.*
+
+## What you can build
+
+**Tags are honest:** **Built** = shipped in a real game, shown with a real capture · **Recipe-supported** = the recipes and skill packs are ready for it · **Planned** = on the list. No fake screenshots here — nothing wears the **Built** tag until it exists and gets a real capture. Right now the trophy shelf is empty and the toolbox is full.
+
+- **Classics** — obbies · tycoons · simulators · round-based minigames — *Recipe-supported*
+- **Your world** — collectible coins · pets & followers · NPCs & enemies · worlds & terrain — *Recipe-supported*
+- **Game systems** — shops · daily rewards · saved progress · badges & game passes — *Recipe-supported*
+- **Polish** — menus & GUIs · sounds & music — *Recipe-supported*
+
+---
+
+<div align="center">
+<img src=".github/assets/rm-divider.webp" width="100%" alt="" />
+</div>
+
+## Parents — start here
+
+The section above is his. This one is yours: what actually controls the AI-written code, what it costs, and what you have to do once.
+
+### Is it safe?
+
+The core control is an **enforcement gate inside Roblox Studio**: a script runs in the game **only if the checker agent approved it**. Approval is verified structurally *and* by SHA-256 hash at the Studio boundary — so a file that was swapped or hand-edited after review fails safe. The gate **fails closed**: nothing unapproved can run in the game.
+
+Around that gate:
+
+- **A destructive-command guard** on the tooling side.
+- **Quarantine for Toolbox free models** — anything pulled from the Toolbox lands in a quarantine area with its scripts disabled, and is scanned before anything runs.
+- **Invisible local auto-save** — git under the hood; he never sees that word. `/undo` is its only face and restores his *code and plan* to an earlier save. (Hand-placed Studio objects are covered by Studio's own undo and version history instead.)
+- **A 99-check test suite** exercises this machinery, and the system has been **independently security-reviewed**.
+
+> **The boundary.** These controls protect the *build pipeline* — what AI-written code can do inside his game. They do not replace Roblox's own account, chat, privacy and spending controls, and they don't replace your supervision.
+
+<div align="center">
+<img src=".github/assets/rm-gate.webp" width="820" alt="The enforcement gate: scripts approved by the checker pass under the crown into Roblox Studio; an unapproved or altered script is stopped in red — the gate fails closed." />
+</div>
+
+*The gate: crown-approved scripts pass; anything unapproved stops, in red.*
+
+### What it costs
+
+Designed to run on a **~€20/month Claude Pro plan**. It stays inside that on purpose: Sonnet by default with Opus reserved for planning, a two-file memory instead of a sprawling context, one build step at a time — and gentle "take a break" nudges, which are as much for the kid as for the token budget.
+
+### One-time setup
+
+Honest version: the install needs a technical adult, and it's done once. After that, his side is just talking.
+
+- **[SETUP.md](SETUP.md)** — your one-time install, start to finish.
+- **[HOW-TO-USE.md](HOW-TO-USE.md)** — his one-page manual.
+- **`/checkup`** — your command afterwards: a health report plus a Studio setup check, any time you want to see the state of things.
+
+---
+
+<div align="center">
+<img src=".github/assets/rm-divider.webp" width="100%" alt="" />
+</div>
+
+## The commands
+
+Eight for the player. One for the parent. The rhythm is **`/build` → `/test`**.
+
+| Purpose | Command | What it does |
+|---|---|---|
+| Start something | `/newgame` | Your idea becomes a plan of small steps, plus a style |
+| The rhythm | `/build` | Builds the next **one** step |
+| | `/test` | Play it in Studio, tick the step |
+| When it breaks | `/fix` | Diagnoses and repairs |
+| | `/undo` | Rewinds to an earlier save, in plain words |
+| Ship it | `/publish` | Guided Studio publish |
+| Learn | `/peek` | Explains the newest script, one idea at a time (opt-in) |
+| | `/help` | The menu |
+
+| For the parent | Command | What it does |
+|---|---|---|
+| Check on things | `/checkup` | Health report + Studio setup check |
+
+## The 11 skill packs
+
+The crew's reference library — loaded by whichever agent needs it.
+
+- **Build** — `roblox-luau-basics` · `roblox-game-recipes`
+- **Look & Feel** — `roblox-gui-basics` · `roblox-sound-and-music` · `roblox-worlds-and-terrain`
+- **Game Systems** — `roblox-npcs-and-enemies` · `roblox-player-data` (saving progress) · `roblox-badges-and-passes` · `roblox-safe-scripting`
+- **Learn & Fix** — `roblox-fix-recipes` · `roblox-code-peek`
+
+---
+
+<div align="center">
+<img src=".github/assets/rm-divider.webp" width="100%" alt="" />
+</div>
+
+## What Mad Yoke's building next
+
+This space is his. The first game to ship gets its **Built** tag and a real capture right here — no mock-ups, no placeholders pretending to be gameplay. Watch this space.
+
+<div align="center">
+
+**Set up by Dad · Built with Claude · Ruled by Mad Yoke 👑**
+
+<sub>This version was designed through a multi-advisor pipeline and independently security-reviewed.</sub>
+
+</div>

@@ -17,6 +17,10 @@ fix) and produce the Luau for it.
      (obby, coins, tycoon, simulator, shop, rounds): follow its recipe shape.
    - `roblox-safe-scripting/SKILL.md` — when the step touches money, saving,
      RemoteEvents, or anything a player could cheat.
+   - `roblox-gui-basics/SKILL.md` — when the step puts anything on screen
+     (counters, bars, banners; full UI panels usually belong to the stylist).
+   - `roblox-npcs-and-enemies/SKILL.md` — when the step has characters the
+     game controls: enemies, pets, shopkeepers, anything that chases or patrols.
 1. Read `game/GAME-PLAN.md` (the step you were given lives there) and any
    existing scripts in `game/scripts/` that this step touches or builds on.
 2. Write the Luau for the step into `game/scripts/`, one file per Studio

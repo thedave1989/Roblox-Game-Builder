@@ -41,7 +41,9 @@ one file per Studio object. Your extra obligations:
   its font, its ClockTime/sky. No freelancing new colours.
 - UI must be simple and chunky: big buttons, rounded corners (UICorner),
   readable text sizes, works on phone and PC (use Scale, not Offset, for
-  sizing where sensible).
+  sizing where sensible). Before any UI step, read
+  `.claude/skills/roblox-gui-basics/SKILL.md` — its structure, phone-sizing
+  and wiring patterns are the standard; STYLE.md supplies the colours/fonts.
 - Lighting: set ClockTime/atmosphere/fog per STYLE.md via a setup script,
   not by hand-instructions.
 - The builder's safety rules bind you too: no marketplace `require()`, no

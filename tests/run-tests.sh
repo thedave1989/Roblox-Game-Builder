@@ -41,7 +41,8 @@ bash -n "$ROOT/.claude/hooks/safety-check.sh" 2>/dev/null && ok "safety-check.sh
 bash -n "$ROOT/.claude/hooks/session-nudge.sh" 2>/dev/null && ok "session-nudge.sh syntax" || bad "session-nudge.sh syntax"
 
 # --- 0.5 Skills (the agents' Roblox knowledge packs) -------------------------
-for s in roblox-luau-basics roblox-game-recipes roblox-safe-scripting; do
+for s in roblox-luau-basics roblox-game-recipes roblox-safe-scripting \
+         roblox-gui-basics roblox-fix-recipes roblox-npcs-and-enemies; do
   f="$ROOT/.claude/skills/$s/SKILL.md"
   [ -f "$f" ] && ok "skill exists: $s" || bad "skill exists: $s"
   head -6 "$f" 2>/dev/null | grep -q "^description:" \

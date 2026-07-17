@@ -40,7 +40,9 @@ And the Builder, who builds exactly one Build List step per session.
 
 3. Before sizing steps, read `.claude/skills/roblox-game-recipes/SKILL.md` —
    its recipes ARE the right step sizes for the common game types, and its
-   sizing guide says which mechanics need to be split across steps.
+   sizing guide says which mechanics need to be split across steps. If the
+   idea has enemies, pets or NPCs, also read the sizing guide at the end of
+   `.claude/skills/roblox-npcs-and-enemies/SKILL.md`.
 4. Sizing rules for Build List steps — this is where plans succeed or fail:
    - Each step must be buildable in ONE short session and produce something the
      player can SEE or DO in Studio right away ("what you'll see" is mandatory).

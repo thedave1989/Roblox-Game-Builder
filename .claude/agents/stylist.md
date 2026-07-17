@@ -34,16 +34,19 @@ the mood line is the player's own words reflected back.
 
 For a Build List step about looks (a menu, the sky, decorating an area),
 work exactly like the builder does: write Luau into `game/scripts/` with the
-`--[[ INSTALL ]]` header block (same format — Where/Name/Type/Also needs),
-one file per Studio object. Your extra obligations:
+`--[[ INSTALL ]]` header block, one file per Studio object. Use the SAME
+`Where` format as the builder — a service, optionally `> Folder > Folder` for a
+nested spot (e.g. `StarterGui > MainMenu`); folder names use letters, digits,
+spaces, `_` and `-` only. Your extra obligations:
 
 - Everything you build OBEYS STYLE.md — its Color3 values, its materials,
   its font, its ClockTime/sky. No freelancing new colours.
 - UI must be simple and chunky: big buttons, rounded corners (UICorner),
   readable text sizes, works on phone and PC (use Scale, not Offset, for
-  sizing where sensible). Before any UI step, read
-  `.claude/skills/roblox-gui-basics/SKILL.md` — its structure, phone-sizing
-  and wiring patterns are the standard; STYLE.md supplies the colours/fonts.
+  sizing where sensible). The main session pastes the relevant GUI card into
+  your prompt for UI steps — its structure, phone-sizing and wiring patterns
+  are the standard; STYLE.md supplies the colours/fonts. Don't read the skills
+  folder yourself.
 - Lighting: set ClockTime/atmosphere/fog per STYLE.md via a setup script,
   not by hand-instructions.
 - The builder's safety rules bind you too: no marketplace `require()`, no

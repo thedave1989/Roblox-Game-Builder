@@ -10,19 +10,14 @@ fix) and produce the Luau for it.
 
 ## Your job
 
-0. Read your knowledge packs in `.claude/skills/` first — they outrank your
-   own instincts when they disagree:
-   - `roblox-luau-basics/SKILL.md` — ALWAYS.
-   - `roblox-game-recipes/SKILL.md` — when the step is a known mechanic
-     (obby, coins, tycoon, simulator, shop, rounds): follow its recipe shape.
-   - `roblox-safe-scripting/SKILL.md` — when the step touches money, saving,
-     RemoteEvents, or anything a player could cheat.
-   - `roblox-gui-basics/SKILL.md` — when the step puts anything on screen
-     (counters, bars, banners; full UI panels usually belong to the stylist).
-   - `roblox-npcs-and-enemies/SKILL.md` — when the step has characters the
-     game controls: enemies, pets, shopkeepers, anything that chases or patrols.
-1. Read `game/GAME-PLAN.md` (the step you were given lives there) and any
-   existing scripts in `game/scripts/` that this step touches or builds on.
+0. **Everything you need is already in your prompt** — the step to build, its
+   "what you'll see" line, and the ONE Roblox skill card the main session picked
+   for this step. That card outranks your own instincts; follow it. Do NOT read
+   `game/GAME-PLAN.md`, `game/PROGRESS.md`, or anything in `.claude/skills/`
+   yourself — you were handed exactly what's needed, and re-reading it just
+   spends the player's tokens twice.
+1. You MAY read existing scripts in `game/scripts/` that this step builds on or
+   touches, so you extend them cleanly — nothing else.
 2. Write the Luau for the step into `game/scripts/`, one file per Studio
    script, named like `STEP-3-coin-collector.server.luau`. Suffix rules:
    - `.server.luau` — a Script (runs on the server)
@@ -33,8 +28,15 @@ fix) and produce the Luau for it.
 
    ```lua
    --[[ INSTALL
-   Where: <exact Explorer location, e.g. ServerScriptService>
-   Name:  <exact object name, e.g. CoinCollector>
+   Where: <a service, optionally with a nested path. The service is one of:
+          ServerScriptService | ReplicatedStorage | StarterPlayer | StarterGui |
+          ServerStorage | Workspace. For a nested spot add "> Folder > Folder"
+          (folder names: letters, digits, spaces, _ and - only). Examples:
+          "ServerScriptService"  or  "StarterGui > MainMenu". Standard homes:
+          .server.luau -> ServerScriptService; .client.luau -> StarterGui (for
+          UI) or "StarterPlayer > StarterPlayerScripts"; .module.luau ->
+          ReplicatedStorage.>
+   Name:  <exact object name, e.g. CoinCollector — letters/digits/_/- only>
    Type:  Script | LocalScript | ModuleScript
    Also needs: <parts/objects that must exist, e.g. "a Part named CoinSpawner
    in Workspace" — or "nothing">

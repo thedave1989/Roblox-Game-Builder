@@ -35,9 +35,10 @@ everything a non-technical user would ever have to think about.
   Writer never reviews its own work — that separation is inherited straight
   from CCMAF.
 
-**Seven commands** are the player's whole interface: `/newgame` `/build`
-`/test` `/fix` `/undo` `/publish` `/help`. The loop is /build → /test,
-one visible step at a time.
+**Eight commands** are the player's whole interface: `/newgame` `/build`
+`/test` `/fix` `/undo` `/publish` `/peek` `/help` (plus `/checkup` for Dave).
+The loop is /build → /test, one visible step at a time; `/peek` is an opt-in
+"explain this in plain words" mode, offered only from `/help`.
 
 **Studio bridge:** the official Roblox Studio MCP plugin (scripts appear in
 their game automatically), with a guided copy-paste fallback built into
@@ -54,11 +55,28 @@ memory between chats. Cold start = read those two files. That's it.
   snapshots as plain choices ("end of yesterday") and restores `game/` only.
 - **Command guard:** `block-danger.py` (adapted from CCMAF) structurally
   blocks catastrophic commands — recursive deletes of roots/home/`.git`,
-  disk writers, formatters, diskpart, fork bombs — Windows-aware, on both
-  the Bash and PowerShell tools. Fails open on parse errors, fails CLOSED if
-  Python is missing. One honest caveat: the hook chain runs through `bash`,
-  so SETUP.md's bash-on-PATH check and by-hand guard test are mandatory —
-  a machine without bash has none of this protection.
+  disk writers, formatters, diskpart, fork bombs — Windows-aware (it catches
+  `del /s`, `Remove-Item -Recurse`, `diskpart` and friends too, however
+  they're typed). Claude Code only has the one Bash tool, even on Windows —
+  there's no separate "PowerShell tool" to also guard. Fails open on parse
+  errors, fails CLOSED if Python is missing. One honest caveat: the hook
+  chain runs through `bash`, so SETUP.md's bash-on-PATH check and by-hand
+  guard test are mandatory — a machine without bash has none of this
+  protection.
+- **Studio gate** (`studio-gate.py` + `record-approval.py` + the install
+  template) — the real control on what reaches Studio. Every Roblox Studio MCP
+  call passes through a `PreToolUse` gate; a script install runs only if it is
+  the EXACT checker-approved file source (matched structurally against the
+  install template and by SHA-256 to a record in `game/.builder/approved.json`),
+  and arbitrary code, model insertion, or any tool Dave hasn't classified in
+  `.claude/studio-tools.json` is blocked by default. It fails CLOSED (unlike the
+  shell guard). Two honest limits: **(1)** the approval record is written by the
+  framework, not cryptographically signed by the checker — so it stops accidents
+  and stale/edited installs, not a deliberately-lying orchestrator, which is why
+  arbitrary exec and model insertion stay Dave-gated even with it in place;
+  **(2)** the `builder`/`stylist` agents that WRITE Luau have no Bash and no MCP
+  tools — they cannot execute anything; only the main session installs, after
+  the checker's PASS. Both are load-bearing — don't "simplify" them away.
 - **Permission walls** in `.claude/settings.json`: Write/Edit scoped to
   `game/**`; deny-rules on secret paths (.env, ssh/aws keys, `.git/`
   internals); ask-gates on `.claude/**`, CLAUDE.md, and remote-touching git.
@@ -74,13 +92,15 @@ memory between chats. Cold start = read those two files. That's it.
   on player machines. Silent when healthy; on failure it makes Claude tell
   the player to get Dave BEFORE building. `/checkup` runs the same checks
   verbosely, plus the test suite, for phone-call diagnosis.
-- **Mechanical frugality** (`session-nudge.sh`): counts prompts per session
-  and past ~25 has Claude suggest a friendly break — the credit protection
-  is enforced by a hook, not just promised in prose (CCMAF's "hooks are
-  enforcement, not suggestion").
-- **Shipped test suite** (`tests/run-tests.sh`): 25+ checks proving the
-  guard's block/allow matrix, snapshot behavior, remote stripping, and both
-  nudges — run it after ANY change under `.claude/`.
+- **Mechanical frugality** (`session-nudge.sh`): counts substantial build/fix
+  actions and past ~12–15 has Claude suggest a friendly break — the credit
+  protection is enforced by a hook, not just promised in prose (CCMAF's "hooks
+  are enforcement, not suggestion"), and it never quotes a usage number it
+  can't actually measure.
+- **Shipped test suite** (`tests/run-tests.sh`): 80+ checks proving the shell
+  guard's block/allow matrix, the Studio gate's install-and-bypass matrix,
+  snapshot behavior, remote stripping, and both nudges — run it after ANY
+  change under `.claude/`.
 
 ## Frugality (Pro-plan friendly)
 
@@ -100,18 +120,25 @@ tests/
   run-tests.sh       # self-test suite — run after any .claude/ change
 .claude/
   settings.json      # model pin, permissions, hook wiring
-  hooks/             # block-danger.py, auto-save, progress-nudge,
+  studio-tools.json  # Dave's Studio-tool safety map (auto / artifact / dave)
+  hooks/             # block-danger.py, studio-gate.py (the F1 Studio gate),
+                     # record-approval.py, auto-save, progress-nudge,
                      # safety-check (SessionStart), session-nudge (frugality)
   agents/            # game-planner, builder, stylist, checker
-  commands/          # newgame, build, test, fix, undo, publish, help, checkup
-  templates/         # style-preview-template.html
-  skills/            # Roblox knowledge packs the agents read before writing
-                     # (luau basics, game recipes, safe scripting, GUI,
-                     #  fix recipes, NPCs & enemies)
+  commands/          # newgame, build, test, fix, undo, publish, peek, help,
+                     # checkup
+  templates/         # style-preview-template.html, install-wrapper.luau
+  skills/            # Roblox knowledge packs (router SKILL.md + references/):
+                     # luau-basics, game-recipes, safe-scripting, gui-basics,
+                     # fix-recipes, npcs-and-enemies, sound-and-music,
+                     # worlds-and-terrain, player-data, badges-and-passes,
+                     # code-peek
 game/
   GAME-PLAN.md       # their game's plan (starts as a friendly placeholder)
   STYLE.md           # the look: palette, materials, sky, fonts
   style-preview.html # generated picture page of STYLE.md (double-click it)
   PROGRESS.md        # memory between chats
   scripts/           # canonical copy of every script installed in Studio
+  changes/           # approved non-script edits (bounded property changes)
+  .builder/          # approval ledger the Studio gate reads (machine state)
 ```

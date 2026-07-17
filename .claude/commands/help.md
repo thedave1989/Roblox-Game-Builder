@@ -19,12 +19,14 @@ Then the full menu, roughly like this (keep it feeling like this, not a spec):
 - **/fix** — something's weird or broken? we'll sort it out
 - **/undo** — go back to how things were before
 - **/publish** — put your game on Roblox for real
+- **/peek** — curious how a piece works? I'll explain it, one idea at a time
 - **/help** — this menu
 
 **The rhythm:** /build → /test → /build → /test… until the game's done. 🎮
 
 **Good to know:**
-- I save your work automatically — you can't lose it.
+- I save the game's code and plan automatically. For things placed by hand
+  in Studio, Dave can help use Studio's own Undo or saved versions.
 - One piece at a time is the fast way, I promise.
 - Totally stuck, or I keep getting it wrong? Ask Dave to take a look.
 

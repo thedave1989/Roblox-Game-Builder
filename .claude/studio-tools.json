@@ -1,0 +1,17 @@
+{
+  "_README": "Dave: this is the Studio-tool safety map. Run /checkup to list the REAL tool names your built-in Roblox Studio MCP exposes, then classify each. TIERS: 'auto' = safe reads / console / mode / play start-stop (no prompt). An ARTIFACT tool that installs a script -> use the object form {\"tier\":\"artifact\",\"field\":\"<name of the tool's code argument>\"}; the gate checks ONLY that field against a checker-approved file and blocks anything else riding along. A model-INSERT tool that can target a parent -> {\"tier\":\"quarantine\",\"field\":\"<name of the parent argument>\"}; the gate requires that field to equal ServerStorage/ToolboxQuarantine. 'dave' = arbitrary code / model insert / anything you're unsure of (blocked, comes to you). ANY tool NOT listed here is treated as 'dave'. Leave run_code on 'dave' until the /checkup gate canary passes, then switch it to {\"tier\":\"artifact\",\"field\":\"<its code arg name>\"}. IMPORTANT: only mark a tool 'artifact' if it has EXACTLY ONE argument the server executes; if a tool takes more than one code-capable argument, keep it 'dave' (the gate validates a single field).",
+  "_verify_at_checkup": [
+    "The server + tool names below are placeholders from the deprecated standalone MCP; the built-in server may differ. /checkup inventories the real ones — set 'server' to the real server name so tools from any OTHER MCP server are default-denied.",
+    "For each artifact/quarantine tool, confirm the exact argument NAME that carries the code / parent (the 'field' value) — the gate reads that field and nothing else.",
+    "Confirm the PreToolUse matcher 'mcp__.*' in settings.json fires on your Claude Code version (the gate canary proves it), and that /checkup added a per-tool allow for each auto/artifact tool so the child sees no prompt on the normal path."
+  ],
+  "server": "SET-BY-CHECKUP",
+  "tools": {
+    "get_console_output": "auto",
+    "get_studio_mode": "auto",
+    "start_stop_play": "auto",
+    "run_code": "dave",
+    "run_script_in_play_mode": "dave",
+    "insert_model": "dave"
+  }
+}

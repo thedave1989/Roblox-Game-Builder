@@ -9,3 +9,10 @@ CLAUDE.local.md
 Thumbs.db
 .DS_Store
 *.log
+
+# Studio-gate approval ledger (per-machine build state)
+game/.builder/approved.json
+
+# Python bytecode
+__pycache__/
+*.pyc

@@ -17,7 +17,7 @@ real Roblox games. No coding needed — that's its job.
 | **/build** | It builds the next piece of your game. |
 | **/test** | It shows you how to try the new piece. You press Play! |
 | **/fix** | Something weird? Broken? Type this and describe it. |
-| **/undo** | Go back to how things were before. Nothing is ever lost. |
+| **/undo** | Go back to how things were before. |
 | **/publish** | Put your game on Roblox so people can play it! |
 | **/help** | Shows you this list, and what to do next. |
 
@@ -30,8 +30,9 @@ away. Before you know it — whole game.
 
 ## The three golden rules
 
-1. **You can't break it.** Your work is saved automatically, always. Worst
-   case, /undo takes you back.
+1. **I save the game's code and plan.** For things you place by hand in
+   Studio, Dave can help you use Studio's own Undo or saved versions. Worst
+   case with the code and plan, /undo takes you back.
 2. **Always /test after /build.** Seeing it work is the fun part anyway.
 3. **Stuck? Say so.** Type /fix and describe it YOUR way ("the door ate me").
    That's a perfectly good bug report.

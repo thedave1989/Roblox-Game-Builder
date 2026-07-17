@@ -22,75 +22,16 @@ about to write disagrees with this file, this file wins.
 
 ## Services
 
-Always `local Players = game:GetService("Players")` — never `game.Players` dot-access.
-Common ones: Players, Workspace, ReplicatedStorage, ServerStorage, TweenService,
-DataStoreService, RunService, UserInputService (client), CollectionService.
+Always `local Players = game:GetService("Players")` — never `game.Players`
+dot-access. Common ones: Players, Workspace, ReplicatedStorage, ServerStorage,
+TweenService, DataStoreService, RunService, UserInputService (client),
+CollectionService.
 
-## Load-safety (the #1 crash source)
+## Reference cards — load the one the step needs
 
-- Things load in over time. Use `:WaitForChild("Name")` for anything a script
-  needs at startup; use `:FindFirstChild("Name")` + a nil-check when the thing
-  might legitimately not exist.
-- New instances: set all properties first, set `.Parent` **last**.
-- Use the `task` library: `task.wait(n)`, `task.spawn(fn)`, `task.defer(fn)`.
-  Never a loop without a `task.wait()` inside.
-
-## Events you'll use constantly
-
-```lua
-Players.PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Connect(function(character)
-        -- character exists now; character:WaitForChild("Humanoid")
-    end)
-end)
-```
-
-Touch with debounce (touched fires many times per touch):
-
-```lua
-local busy = {}
-part.Touched:Connect(function(hit)
-    local player = Players:GetPlayerFromCharacter(hit.Parent)
-    if not player or busy[player] then return end
-    busy[player] = true
-    -- do the thing once
-    task.wait(1)
-    busy[player] = nil
-end)
-```
-
-- Clickable things: prefer **ProximityPrompt** (walk up + press E) or
-  **ClickDetector**. Both have server-side events — keep the logic there.
-
-## leaderstats (the score column every Roblox player knows)
-
-```lua
-Players.PlayerAdded:Connect(function(player)
-    local stats = Instance.new("Folder")
-    stats.Name = "leaderstats"           -- exact name, lowercase, required
-    local coins = Instance.new("IntValue")
-    coins.Name = "Coins"
-    coins.Parent = stats
-    stats.Parent = player
-end)
-```
-
-Only the **server** ever changes leaderstats values.
-
-## Making things move and look alive
-
-- Smooth movement/colour/size changes → **TweenService** on the server for
-  world objects, on the client for GUI. Never move parts with a bare loop
-  when a tween does it.
-- Per-frame work (`RunService.Heartbeat`) is a last resort — it runs 60×/sec
-  and costs accordingly. Cap what it touches.
-
-## Small-but-important habits
-
-- Names matter: scripts find things by exact name. One typo = nil.
-- Anchor parts that shouldn't fall (`part.Anchored = true`).
-- `Instance.new("Part")` defaults to unanchored grey 4×1×2 — set Size,
-  Position, Color/Material (from game/STYLE.md), Anchored, then Parent.
-- Attributes (`part:SetAttribute("Stage", 3)`) beat hidden ValueObjects for
-  tagging data onto parts.
-- Comments: plain English, one per meaningful chunk — a curious kid reads these.
+| Load when the step... | Card |
+|---|---|
+| Reads or creates anything at startup (`WaitForChild`, the `task` library, Instance.new ordering) | [references/load-safety.md](references/load-safety.md) |
+| Wires PlayerAdded/CharacterAdded, a Touched handler, or a clickable | [references/events.md](references/events.md) |
+| Needs a score/counter the player sees | [references/leaderstats.md](references/leaderstats.md) |
+| Tweens something, or you want the naming/anchoring/attribute habits | [references/polish-and-habits.md](references/polish-and-habits.md) |

@@ -15,7 +15,10 @@
       "Bash(git rm:*)",
       "Bash(git mv:*)",
       "Bash(mkdir:*)",
-      "Bash(bash .claude/hooks/auto-save.sh:*)"
+      "Bash(bash .claude/hooks/auto-save.sh:*)",
+      "Bash(python .claude/hooks/record-approval.py:*)",
+      "Bash(python3 .claude/hooks/record-approval.py:*)",
+      "Bash(py .claude/hooks/record-approval.py:*)"
     ],
     "ask": [
       "Bash(git push:*)",
@@ -29,7 +32,9 @@
       "Edit(CLAUDE.md)",
       "Write(CLAUDE.md)",
       "Edit(.claude/**)",
-      "Write(.claude/**)"
+      "Write(.claude/**)",
+      "Edit(game/.builder/**)",
+      "Write(game/.builder/**)"
     ],
     "deny": [
       "Read(.env)",
@@ -95,11 +100,20 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Bash|PowerShell",
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
             "command": "bash -c 'cd \"$CLAUDE_PROJECT_DIR\" && PY=$(command -v python3 || command -v python || command -v py || true); if [ -n \"$PY\" ]; then \"$PY\" .claude/hooks/block-danger.py; else echo \"The safety guard needs Python and could not find it, so this command was not run. Ask Dave to reinstall Python (see SETUP.md).\" >&2; exit 2; fi'"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'cd \"$CLAUDE_PROJECT_DIR\" && PY=$(command -v python3 || command -v python || command -v py || true); if [ -n \"$PY\" ]; then \"$PY\" .claude/hooks/studio-gate.py; else echo \"The Studio safety gate needs Python and could not find it, so this change was not made. Ask Dave to reinstall Python (see SETUP.md).\" >&2; exit 2; fi'"
           }
         ]
       }

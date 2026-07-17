@@ -78,6 +78,29 @@ fi
 [ -f "game/PROGRESS.md" ] && OK+=("PROGRESS.md present") \
   || PROBLEMS+=("game/PROGRESS.md is missing")
 
+# 7. Studio safety gate — live-fire proof it blocks a hand-authored Studio
+#    write. This needs no live Studio/MCP connection at all (a closed
+#    Studio is normal, never a failure) — it just feeds the hook a fake
+#    event on stdin, the same way Claude Code would for a real tool call.
+if [ -n "$PY" ] && [ -f ".claude/hooks/studio-gate.py" ]; then
+  echo '{"tool_name":"mcp__x__run_code","tool_input":{"command":"print(\"hi\")"}}' \
+    | "$PY" .claude/hooks/studio-gate.py >/dev/null 2>&1
+  if [ $? -eq 2 ]; then
+    OK+=("Studio safety gate blocks a hand-authored run_code payload")
+  else
+    PROBLEMS+=("the Studio safety gate did NOT block a hand-authored Studio write")
+  fi
+elif [ -n "$PY" ]; then
+  PROBLEMS+=("studio-gate.py is missing from .claude/hooks/")
+fi
+
+# 8. Studio gate is wired into settings.json (someone may have edited it).
+if grep -q "studio-gate.py" .claude/settings.json 2>/dev/null; then
+  OK+=("Studio gate wired in settings.json")
+else
+  PROBLEMS+=("the Studio gate is not wired in .claude/settings.json")
+fi
+
 # --- Report -----------------------------------------------------------------
 if [ "${#PROBLEMS[@]}" -gt 0 ]; then
   echo "SAFETY CHECK FAILED (${#PROBLEMS[@]} problem(s)):"

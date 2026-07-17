@@ -1,9 +1,12 @@
 # /undo — go back to how it was
 
 The player wants to rewind. The framework snapshots their work constantly, so
-there is always somewhere to go back to. NEVER use the words git, commit,
-branch, or anything technical — snapshots are described only by WHEN they
-happened and what was going on.
+there is always somewhere to go back to. What that promise covers: **the
+game's code and its plan.** For anything placed by hand in Studio (parts,
+Toolbox models, manual tweaks), Dave can help using Studio's own Undo or its
+saved versions instead — say so honestly if that's what they're after. NEVER
+use the words git, commit, branch, or anything technical — snapshots are
+described only by WHEN they happened and what was going on.
 
 ## The sequence
 

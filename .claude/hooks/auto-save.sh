@@ -7,7 +7,7 @@
 #
 # Wired in .claude/settings.json:
 #   PostToolUse (Write|Edit|MultiEdit) -> auto-save.sh after-change
-#   Stop                               -> auto-save.sh "end of session"
+#   Stop -> progress-nudge.sh -> auto-save.sh "end of session"
 #
 # Rules (contract:snapshot-protocol in the parent project):
 #   - local commits on main only; NEVER push, branch, rebase, or force

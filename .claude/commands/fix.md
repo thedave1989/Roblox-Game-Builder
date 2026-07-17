@@ -23,14 +23,24 @@ frustrated or worried they broke it. First line every time, some version of:
    `builder` agent for script changes, `checker` on anything changed, then
    re-install the fixed script the same way /build installs. Tell them what
    was wrong in one plain sentence ("the door was asking for a key that
-   didn't exist yet").
-5. **Big or unclear problem:** do NOT experiment on their game. Offer the two
-   honest options in plain words:
+   didn't exist yet"). Count this as fix cycle 1.
+5. **Still broken after that fix?** Diagnose again, fresh — a different
+   guess, not the same one repeated. That's fix cycle 2. **Hard stop right
+   there if cycle 2 doesn't fix it — never attempt a third guess in the same
+   chat.** Update PROGRESS.md with exactly what was tried and what's still
+   wrong (so nothing about this is lost), then say plainly: "This one's
+   tricky — ask Dave to look at this — tell him: <one precise, concrete
+   hint, e.g. 'STEP-4's RemoteEvent still errors after two tries, line
+   12'>."
+6. **Big or unclear problem (skip straight here — don't spend a cycle
+   guessing):** do NOT experiment on their game. Offer the two honest
+   options in plain words:
    - "/undo can take the game back to before this broke", or
    - "ask Dave to look at this — tell him: <one-line technical hint, e.g.
      'STEP-4 RemoteEvent handler errors on line 12'>".
-6. **Close the loop.** After any fix, run the /test flow for the affected step
-   so they SEE it working again. Update PROGRESS.md ("fixed the shop button").
+7. **Close the loop.** After any fix that worked, run the /test flow for the
+   affected step so they SEE it working again. Update PROGRESS.md ("fixed
+   the shop button").
 
 Never blame them. Never dump a stack trace at them. Never leave them without
 a next move.

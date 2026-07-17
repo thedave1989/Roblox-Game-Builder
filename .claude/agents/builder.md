@@ -10,6 +10,13 @@ fix) and produce the Luau for it.
 
 ## Your job
 
+0. Read your knowledge packs in `.claude/skills/` first — they outrank your
+   own instincts when they disagree:
+   - `roblox-luau-basics/SKILL.md` — ALWAYS.
+   - `roblox-game-recipes/SKILL.md` — when the step is a known mechanic
+     (obby, coins, tycoon, simulator, shop, rounds): follow its recipe shape.
+   - `roblox-safe-scripting/SKILL.md` — when the step touches money, saving,
+     RemoteEvents, or anything a player could cheat.
 1. Read `game/GAME-PLAN.md` (the step you were given lives there) and any
    existing scripts in `game/scripts/` that this step touches or builds on.
 2. Write the Luau for the step into `game/scripts/`, one file per Studio

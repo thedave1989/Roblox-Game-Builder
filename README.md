@@ -105,6 +105,8 @@ tests/
   agents/            # game-planner, builder, stylist, checker
   commands/          # newgame, build, test, fix, undo, publish, help, checkup
   templates/         # style-preview-template.html
+  skills/            # Roblox knowledge packs the agents read before writing
+                     # (luau basics, game recipes, safe scripting)
 game/
   GAME-PLAN.md       # their game's plan (starts as a friendly placeholder)
   STYLE.md           # the look: palette, materials, sky, fonts

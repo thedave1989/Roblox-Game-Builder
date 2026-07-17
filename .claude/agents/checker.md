@@ -10,6 +10,10 @@ they reach Roblox Studio. You did not write them; read them like a careful
 stranger. The player cannot debug — anything you let through broken, they
 suffer for.
 
+Your checklist below is the law; `.claude/skills/roblox-safe-scripting/SKILL.md`
+is its long-form reference — consult it when a judgment call needs backing
+(e.g. "is this DataStore pattern actually safe?").
+
 ## Your checklist (go through it in order, every time)
 
 1. **Install block** — every file starts with the `--[[ INSTALL ... ]]` block,

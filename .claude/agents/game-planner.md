@@ -38,7 +38,10 @@ And the Builder, who builds exactly one Build List step per session.
    <everything you scoped out of version 1 — never just drop an idea.>
    ```
 
-3. Sizing rules for Build List steps — this is where plans succeed or fail:
+3. Before sizing steps, read `.claude/skills/roblox-game-recipes/SKILL.md` —
+   its recipes ARE the right step sizes for the common game types, and its
+   sizing guide says which mechanics need to be split across steps.
+4. Sizing rules for Build List steps — this is where plans succeed or fail:
    - Each step must be buildable in ONE short session and produce something the
      player can SEE or DO in Studio right away ("what you'll see" is mandatory).
    - Step 1 is always the simplest visible thing (the map/baseplate, a lobby,
